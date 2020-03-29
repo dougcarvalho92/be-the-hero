@@ -1,11 +1,11 @@
 # be-the-hero
 Semana OmniStack 11.0
 
-#Back End
+# Back End
 Foi utilizado Node
 
-#Front Web
+# Front Web
 React
 
-#Mobile
+# Mobile
 React-Native
