@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiPower, FiTrash2 } from 'react-icons/fi';
 
 import logoImg from '../../assets/logo.svg';
@@ -8,7 +8,7 @@ import api from "../../services/api";
 
 
 export default function Profile() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const ongId = localStorage.getItem('ongId');
   const ongName = localStorage.getItem('ongName');
@@ -38,13 +38,13 @@ export default function Profile() {
   }
   function handleLogout() {
     localStorage.clear();
-    history.push('/')
+    navigate('/')
 
   }
   return (
     <div className="profile-container">
       <header>
-        <img src={logoImg} alt="Be The Hero" srcset="" />
+        <img src={logoImg} alt="Be The Hero" />
         <span>Bem vinda, {ongName}</span>
 
         <Link className="button" to="/incidents/new">Cadastrar novo caso</Link>
