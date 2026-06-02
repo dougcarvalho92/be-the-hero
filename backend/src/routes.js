@@ -1,5 +1,6 @@
 const express = require('express');
 const { celebrate, Segments, Joi } = require('celebrate');
+const rateLimit = require('express-rate-limit');
 
 
 const OngController = require('./controllers/OngController');
@@ -8,8 +9,24 @@ const ProfileController = require('./controllers/ProfileController');
 const SessionController = require('./controllers/SessionController');
 const routes = express.Router();
 
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+routes.use(limiter);
+
 routes.get('/ongs', OngController.index);
-routes.post('/ongs', celebrate({
+routes.post('/ongs', authLimiter, celebrate({
     [Segments.BODY]: Joi.object().keys({
         name: Joi.string().required(),
         email:Joi.string().required().email(),
@@ -19,15 +36,15 @@ routes.post('/ongs', celebrate({
     })
 }), OngController.create);
 
-routes.post('/sessions', SessionController.create)
+routes.post('/sessions', authLimiter, SessionController.create)
 
 routes.get('/incidents', IncidentController.index);
-routes.post('/incidents', celebrate({
+routes.post('/incidents', authLimiter, celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         page: Joi.number(),
     })
 }), IncidentController.create);
-routes.delete('/incidents/:id', celebrate({
+routes.delete('/incidents/:id', authLimiter, celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         id: Joi.number().required(),
     })
